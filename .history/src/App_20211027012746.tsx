@@ -25,9 +25,6 @@ export type CartItemType = {
 const getProducts = async (): Promise<CartItemType[]> =>
   await (await fetch("https://fakestoreapi.com/products")).json();
 
-const getTotalItems = (items: CartItemType[]) => {
-  return items.reduce((acc: number, item) => acc + item.amount, 0);
-};
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
@@ -36,6 +33,10 @@ const App = () => {
     getProducts
   );
   console.log(data);
+
+  const getTotalItems = (items: CartItemType[]) => {
+    return items.reduce((acc: number, item) => acc + item.amount, 0);
+  };
 
   const handleAddToCart = (clickedItem: CartItemType) => {
     setCartItems((prev) => {
@@ -58,10 +59,8 @@ const App = () => {
       prev.reduce((acc, item) => {
         if (item.id === id) {
           if (item.amount === 1) return acc;
-          else return [...acc, { ...item, amount: item.amount - 1 }];
-        } else {
-          return [...acc, item];
-        }
+          return [...acc, { ...item, amount: item.amount - 1 }];
+        } else return [...acc, item];
       }, [] as CartItemType[])
     );
   };

@@ -25,9 +25,6 @@ export type CartItemType = {
 const getProducts = async (): Promise<CartItemType[]> =>
   await (await fetch("https://fakestoreapi.com/products")).json();
 
-const getTotalItems = (items: CartItemType[]) => {
-  return items.reduce((acc: number, item) => acc + item.amount, 0);
-};
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
@@ -37,34 +34,13 @@ const App = () => {
   );
   console.log(data);
 
-  const handleAddToCart = (clickedItem: CartItemType) => {
-    setCartItems((prev) => {
-      // 1. Is the item already added in the cart?
-      const isItemInCart = prev.find((item) => item.id === clickedItem.id);
-      if (isItemInCart) {
-        return prev.map((item) => {
-          return item.id === clickedItem.id
-            ? { ...item, amount: item.amount + 1 }
-            : item;
-        });
-      }
-      // First time the item is added
-      return [...prev, { ...clickedItem, amount: 1 }];
-    });
+  const getTotalItems = (items: CartItemType[]) => {
+    return items.reduce((acc: number, item) => acc + item.amount, 0);
   };
 
-  const handleRemoveFromCart = (id: number) => {
-    setCartItems((prev) =>
-      prev.reduce((acc, item) => {
-        if (item.id === id) {
-          if (item.amount === 1) return acc;
-          else return [...acc, { ...item, amount: item.amount - 1 }];
-        } else {
-          return [...acc, item];
-        }
-      }, [] as CartItemType[])
-    );
-  };
+  const handleAddToCart = (clickedItem: CartItemType) => null;
+
+  const handleRemoveFromCart = () => null;
 
   if (isLoading) {
     return <LinearProgress />;
@@ -87,6 +63,7 @@ const App = () => {
         </Badge>
       </StyledButton>
       <Grid container spacing={3}>
+        \
         {data?.map((item) => (
           <Grid item key={item.id} xs={12} sm={4}>
             <Item item={item} handleAddToCart={handleAddToCart} />
